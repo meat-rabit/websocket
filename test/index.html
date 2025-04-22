@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" placeholder="请输入你的内容">
+    <button>发送请求</button>
+    <div>
+        算法
+    </div>
+
+    <script>
+        const input = document.querySelector('input')
+        const button = document.querySelector('button')
+        const div = document.querySelector('div')
+
+        // 创建webscoket
+        const scoket = new WebSocket("ws://localhost:3000")
+        // 发送消息
+        scoket.addEventListener('open',function(){
+            div.innerHTML = "链接成功"
+        })
+        // 返回消息
+        button.addEventListener('click',function(){
+            div.innerHTML = input.value
+        })
+    </script>
+</body>
+</html>

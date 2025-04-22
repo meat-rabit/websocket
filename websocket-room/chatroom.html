@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天室</title>
+</head>
+<body>
+    <input type="text" placeholder="请输入你的内容">
+    <button>发送请求</button>
+    <div>
+        
+    </div>
+
+    <script>
+        const input = document.querySelector('input')
+        const button = document.querySelector('button')
+        const div = document.querySelector('div')
+
+        // 消息类型
+        const TYPE_ENTER = 0
+        const TYPE_LEAVE = 1
+        const TYPE_MSG = 2
+
+        // 创建webscoket
+        const scoket = new WebSocket("ws://localhost:3090")
+        // 发送消息
+        scoket.addEventListener('open',function(){
+            div.innerHTML = "链接成功"
+        })
+
+        // 点击事件  发送消息
+        button.addEventListener('click',function(){
+            var value = input.value
+            scoket.send(value)
+            input.value = ''
+        })
+
+        // 接收服务器的数据
+        scoket.addEventListener('message',function(e){
+            console.log(e.data)
+            const data = JSON.parse(e.data)
+            // div.innerHTML = e.data
+            var dv = document.createElement('div')
+            dv.innerText = data.msg + '---' + data.time
+            if (data.type === TYPE_ENTER){
+                dv.style.color = 'green'
+            } 
+            else if (data.type === TYPE_MSG){
+                dv.style.color = 'black'
+            } else if(data.type === TYPE_LEAVE){
+                dv.style.color = 'red'
+            }
+            div.appendChild(dv) //保证聊天框的内容不会被覆盖
+        })
+        scoket.addEventListener('close',function(){
+            div.innerHTML  = '服务器断开连接'
+        })
+    </script>
+</body>
+</html>
